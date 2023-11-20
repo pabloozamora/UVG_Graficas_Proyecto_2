@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "D:/SDL2/**",
-                "D:/SDL2_image/**"
+                "D:/SDL2_image/**",
+                "D:/SDL2_mixer/**"
             ],
             "defines": [
                 "_DEBUG",

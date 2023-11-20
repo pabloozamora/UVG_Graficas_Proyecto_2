@@ -13,6 +13,9 @@ set(SDL2_DIR "D:/SDL2/cmake") # Replace with the actual path
 # Set SDL2_image
 set(SDL2_image_DIR "D:/SDL2_image/cmake")
 
+# Set SDL2_mixer
+set(SDL2_micer_DIR "D:/SDL2_mixer/cmake")
+
 # Set GLM
 # set(glm_DIR "D:/glm/cmake/glm")
 
@@ -21,6 +24,10 @@ find_package(SDL2 REQUIRED PATHS "D:/SDL2/")
 
 # Find SDL2_image
 find_package(SDL2_image REQUIRED PATHS "D:/SDL2_image/")
+
+# Find SDL2_mixer
+find_package(SDL2_mixer REQUIRED PATHS "D:/SDL2_mixer/")
+
 
 # Find GLM
 # find_package(glm REQUIRED PATHS "D:/glm/")
@@ -38,5 +45,6 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2main SDL2::SDL2)
 #target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_image::SDL2_image)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2_mixer::SDL2_mixer)
 
 

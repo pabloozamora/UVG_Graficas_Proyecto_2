@@ -30,6 +30,11 @@ public:
 
     // Get the color of the pixel at (x, y) from an image with a specific key
     static Color getPixelColor(const std::string& key, int x, int y) {
+        /*if (x > 128 || x < 0 || y < 0 || y > 128) {
+            //SDL_Log("%d, %d", x, y);
+            // throw std::runtime_error("Se sale del array");
+            return Color{255, 0, 0};
+        }*/
         auto it = imageSurfaces.find(key);
         if (it == imageSurfaces.end()) {
             throw std::runtime_error("Image key not found!");
@@ -66,7 +71,7 @@ public:
         return Color{color.r, color.g, color.b};
     }
 
-    static void render(SDL_Renderer* renderer, const std::string& key, int x, int y) {
+    static void render(SDL_Renderer* renderer, const std::string& key, int x, int y, int sizeX = -1, int sizeY = -1) {
         auto it = imageSurfaces.find(key);
         if (it == imageSurfaces.end()) {
             throw std::runtime_error("Image key not found!");
@@ -81,7 +86,13 @@ public:
         }
 
         // Set render destination and render the texture
-        SDL_Rect destRect = { x, y, targetSurface->w, targetSurface->h };
+        SDL_Rect destRect;
+        if (sizeX == -1) {
+            destRect = { x, y, targetSurface->w, targetSurface->h };
+        } else {
+           destRect = { x, y, sizeX, sizeY };
+        }
+         
         SDL_RenderCopy(renderer, texture, NULL, &destRect);
 
         // Free the created texture

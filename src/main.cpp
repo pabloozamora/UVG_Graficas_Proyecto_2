@@ -3,12 +3,10 @@
 #include <SDL_render.h>
 #include <SDL_video.h>
 #include <SDL_mixer.h>
-#include "../include/print.h"
 #include "color.h"
 #include "imageloader.h"
 #include "raycaster.h"
 #include "fps.h"
-#include "../include/FastNoiseLite.h"
 
 SDL_Window* window;
 SDL_Renderer* renderer;
@@ -19,8 +17,6 @@ bool win = false;
 int level = 1;
 bool openMinimap = false;
 bool shooting = false;
-
-FastNoiseLite floorNoise;
 
 void clear() {
   if (level == 1) SDL_SetRenderDrawColor(renderer, 144, 127, 127, 255);

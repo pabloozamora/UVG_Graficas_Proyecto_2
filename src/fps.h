@@ -17,7 +17,7 @@ void endFPS(SDL_Window *window)
     if (frameTick > 0)
     {
         std::ostringstream titleStream;
-        titleStream << "FPS: " << 1000.0 / frameTick;
+        titleStream << "Proyecto 2: Raycasting - FPS: " << 1000.0 / frameTick;
         SDL_SetWindowTitle(window, titleStream.str().c_str());
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../include/print.h"
 #include <iostream>
 #include <fstream>
 #include <SDL_render.h>

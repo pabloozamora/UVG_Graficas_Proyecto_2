@@ -30,11 +30,9 @@ public:
 
     // Get the color of the pixel at (x, y) from an image with a specific key
     static Color getPixelColor(const std::string& key, int x, int y) {
-        /*if (x > 128 || x < 0 || y < 0 || y > 128) {
-            //SDL_Log("%d, %d", x, y);
-            // throw std::runtime_error("Se sale del array");
+        if (x > 1024 || x < 0 || y < 0 || y > 1024) { // Color por defecto si falla
             return Color{255, 0, 0};
-        }*/
+        }
         auto it = imageSurfaces.find(key);
         if (it == imageSurfaces.end()) {
             throw std::runtime_error("Image key not found!");

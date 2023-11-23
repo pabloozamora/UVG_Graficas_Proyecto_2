@@ -19,7 +19,7 @@ const Color W = {255, 255, 255};
 const int mapWidth = 16;
 const int mapHeight = 9;
 
-const int BLOCK = 35; //Pixels por block del mapa (ancho y alto)
+const int BLOCK = 35; //Pixels por block de las paredes (ancho y alto)
 const int MINIBLOCK = 20; //Pixeles por block del minimap
 
 const int SCREEN_WIDTH = mapWidth * BLOCK;
@@ -61,6 +61,7 @@ public:
   std::vector<std::string> map;
 
   void load_map(const std::string& filename) {
+    map.clear();
     std::ifstream file(filename);
     std::string line;
     while (getline(file, line)) {
@@ -74,14 +75,14 @@ public:
     SDL_RenderDrawPoint(renderer, x, y);
   }
 
-  void rect(int x, int y, const std::string& mapHit) {
+  void rect(int x, int y, const std::string& mapHit, int level) {
     for(int cx = x; cx < x + MINIBLOCK; cx++) {
       for(int cy = y; cy < y + MINIBLOCK; cy++) {
         int tx = ((cx - x) * tsize) / MINIBLOCK;
         int ty = ((cy - y) * tsize) / MINIBLOCK;
+        std::string key = std::to_string(level) + '+';
 
-        //Color c = ImageLoader::getPixelColor(mapHit, tx, ty);
-        Color c = Color(255, 255, 255);
+        Color c = ImageLoader::getPixelColor(key, tx, ty);
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b , 255);
         SDL_RenderDrawPoint(renderer, cx, cy);
       }
@@ -173,11 +174,11 @@ public:
             std::string mapHit;
             mapHit = map[j][i];
             Color c = Color(255, 0, 0);
-            rect(x, y, mapHit);
+            rect(x, y, mapHit, level);
           }
         }
       }
-      ImageLoader::render(renderer, "mp", static_cast<int>((player.x / BLOCK) * MINIBLOCK) + mapPosx, static_cast<int>((player.y / BLOCK) * MINIBLOCK) + mapPosy, MINIBLOCK, MINIBLOCK);
+      ImageLoader::render(renderer, "mp", static_cast<int>((player.x / BLOCK) * MINIBLOCK) + mapPosx, static_cast<int>((player.y / BLOCK) * MINIBLOCK) + mapPosy, MINIBLOCK - 5, MINIBLOCK - 5);
     }
   }
 

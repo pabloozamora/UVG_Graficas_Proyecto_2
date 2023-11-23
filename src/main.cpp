@@ -23,56 +23,16 @@ bool shooting = false;
 FastNoiseLite floorNoise;
 
 void clear() {
-  SDL_SetRenderDrawColor(renderer, 56, 56, 56, 255);
+  if (level == 1) SDL_SetRenderDrawColor(renderer, 144, 127, 127, 255);
+  if (level == 2) SDL_SetRenderDrawColor(renderer, 44, 47, 51, 255);
+  if (level == 3) SDL_SetRenderDrawColor(renderer, 216, 230, 225, 255);
   SDL_RenderClear(renderer);
 }
 
-//Intento de tiles
-
-/*void draw_floor() {
-    Color floorColor(255, 255, 255, 255);// floor color
-    const int floorTile = 40; // Pixels in a floor tile
-    for (int x = 0; x <= SCREEN_WIDTH; x += floorTile) {
-        floorColor = floorColor * -1;
-        for (int y = SCREEN_HEIGHT / 2; y <= SCREEN_HEIGHT; y += floorTile) {
-            floorColor = floorColor * -1;
-            // Set the draw color inside the loop to change color for each tile
-            SDL_SetRenderDrawColor(renderer, floorColor.r, floorColor.g, floorColor.b, 255);
-            SDL_Rect rect = {
-                x,
-                y,
-                floorTile, // Width of the floor tile
-                floorTile  // Height of the floor tile
-            };
-            SDL_RenderFillRect(renderer, &rect);
-        }
-    }
-}*/
-
-// Intento de usar noise para patrones de suelo
-
-/* void draw_floor(SDL_Renderer* renderer, int ox, int oy) {
-  Color floorColor(120, 55, 38, 255);
-  floorNoise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
-  floorNoise.SetFractalType(FastNoiseLite::FractalType_Ridged);
-  floorNoise.SetFrequency(4.0f);
-  float zoom = 200.0f;
-
-  for (int x = 0; x <= SCREEN_WIDTH; x++){
-    for (int y = SCREEN_HEIGHT/2; y <= SCREEN_HEIGHT; y++){
-      float noise = floorNoise.GetNoise(x * zoom + ox, y * zoom + oy);
-      floorColor = floorColor * noise;
-      SDL_SetRenderDrawColor(renderer, floorColor.r, floorColor.g, floorColor.b, floorColor.a);
-      SDL_RenderDrawPoint(renderer, x, y);
-    }
-  }
-  
-
-} */
-
 void draw_floor() {
-  // floor color
-  SDL_SetRenderDrawColor(renderer, 121, 56, 136, 255);
+  if (level == 1) SDL_SetRenderDrawColor(renderer, 121, 56, 56, 255);
+  if (level == 2) SDL_SetRenderDrawColor(renderer, 27, 50, 71, 255);
+  if (level == 3) SDL_SetRenderDrawColor(renderer, 139, 186, 192, 255);
   SDL_Rect rect = {
     0, 
     SCREEN_HEIGHT / 2,
@@ -111,15 +71,15 @@ int main(int argv, char** args) {
   ImageLoader::loadImage("1g", "../assets/goal.png");
 
   // Nivel 2
-  ImageLoader::loadImage("2+", "../assets/wall2_3.png");
-  ImageLoader::loadImage("2-", "../assets/wall2_1.png");
-  ImageLoader::loadImage("2|", "../assets/wall2_2.png");
-  ImageLoader::loadImage("2*", "../assets/wall2_4.png");
+  ImageLoader::loadImage("2+", "../assets/wall2_1.png");
+  ImageLoader::loadImage("2-", "../assets/wall2_4.png");
+  ImageLoader::loadImage("2|", "../assets/wall2_3.png");
+  ImageLoader::loadImage("2*", "../assets/wall2_2.png");
   ImageLoader::loadImage("2g", "../assets/goal2.png");
 
   // Nivel 3
-  ImageLoader::loadImage("3+", "../assets/wall3_3.png");
-  ImageLoader::loadImage("3-", "../assets/wall3_1.png");
+  ImageLoader::loadImage("3+", "../assets/wall3_1.png");
+  ImageLoader::loadImage("3-", "../assets/wall3_3.png");
   ImageLoader::loadImage("3|", "../assets/wall3_2.png");
   ImageLoader::loadImage("3*", "../assets/wall3_4.png");
   ImageLoader::loadImage("3g", "../assets/goal3.png");
@@ -129,16 +89,15 @@ int main(int argv, char** args) {
   ImageLoader::loadImage("main2", "../assets/maintitle2.png");
   ImageLoader::loadImage("main3", "../assets/maintitle3.png");
   ImageLoader::loadImage("success", "../assets/success.png");
-
-  ImageLoader::loadImage("mp", "../assets/mapPlayer.png");
   ImageLoader::loadImage("mmbg", "../assets/mmbackground.png");
 
+  // Sprites
+  ImageLoader::loadImage("mp", "../assets/mapPlayer.png");
   ImageLoader::loadImage("pov1", "../assets/gun1.png");
   ImageLoader::loadImage("pov2", "../assets/gun2.png");
 
 
   Raycaster r = { renderer };
-  r.load_map("../assets/map1.txt");
 
   clear();
 
@@ -156,13 +115,13 @@ int main(int argv, char** args) {
             if (event.type == SDL_KEYDOWN) {
                 switch(event.key.keysym.sym ){
                 case SDLK_a:
-                    if (!mainTitle) {
+                    if (!mainTitle && !win && !openMinimap) {
                       r.player.a += 3.14/24;
                       if (r.player.a > 2 * M_PI) r.player.a -= 2 * M_PI;
                     }
                     break;
                 case SDLK_d:
-                    if (!mainTitle) {
+                    if (!mainTitle && !win && !openMinimap) {
                       r.player.a -= 3.14/24;
                       if (r.player.a < 2 * M_PI) r.player.a -= 2 * M_PI;
                     }
@@ -173,7 +132,7 @@ int main(int argv, char** args) {
                         Mix_PlayChannel(0, selectSound, 0);
                         level--;
                       }
-                    } else if (!win) {
+                    } else if (!win && !openMinimap) {
 
                       int nextX =  r.player.x + 2 *speed * cos(r.player.a);
                       int nextY = r.player.y + 2 * speed * sin(r.player.a);
@@ -196,7 +155,7 @@ int main(int argv, char** args) {
                         Mix_PlayChannel(0, selectSound, 0);
                         level ++;
                       }
-                    } else if (!win) {
+                    } else if (!win && !openMinimap) {
 
                       int nextX =  r.player.x - speed * cos(r.player.a);
                       int nextY = r.player.y - speed * sin(r.player.a);
@@ -208,13 +167,14 @@ int main(int argv, char** args) {
                       //SDL_Log("x: %d, y: %d", static_cast<int>((r.player.x / BLOCK) * MINIBLOCK) + mapPosx, static_cast<int>((r.player.y / BLOCK) * MINIBLOCK) + mapPosy);
                     }
                     break;
-                case SDLK_m:
+                case SDLK_SPACE:
                     if (!mainTitle && !win) {
                       openMinimap = !openMinimap;
                     }
                     break;
                 case SDLK_RETURN:
                     if (mainTitle) {
+                      r.load_map("../assets/map"  + std::to_string(level) + ".txt");
                       mainTitle = false;
                     }
                     break;
@@ -232,14 +192,14 @@ int main(int argv, char** args) {
               int mouseX, mouseY;
               SDL_GetMouseState(&mouseX, &mouseY);
               if (mouseX >= SCREEN_WIDTH - SCREEN_WIDTH/3) {
-                if (!mainTitle) {
+                if (!mainTitle && !win && !openMinimap) {
                       r.player.a -= 3.14/24;
                       if (r.player.a > 2 * M_PI) r.player.a -= 2 * M_PI;
                     }
                 break;
               }
               if (mouseX <= SCREEN_WIDTH/3) {
-                if (!mainTitle) {
+                if (!mainTitle && !win && !openMinimap) {
                       r.player.a += 3.14/24;
                       if (r.player.a < 2 * M_PI) r.player.a -= 2 * M_PI;
                     }
@@ -248,7 +208,7 @@ int main(int argv, char** args) {
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
               if (event.button.button == SDL_BUTTON_LEFT) {
-                if (!mainTitle) {
+                if (!mainTitle && !win && !openMinimap) {
                   Mix_PlayChannel(0, gunshot, 0);
                   shooting = true;
                 }
